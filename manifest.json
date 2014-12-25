@@ -1,0 +1,16 @@
+{
+	"manifest_version": 2,
+
+	"name": "History Analytics",
+	"description": "lorem ipsum",
+
+	"version": "0.1",
+
+	"permissions": [
+		"history"
+	],
+
+	"chrome_url_overrides": {
+		"history": "index.html"
+	}
+}
