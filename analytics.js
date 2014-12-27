@@ -1,5 +1,20 @@
 var domainExp = /(\/\/www\.|\/\/)(((?!\/).)*)\//
-// var ctx = $("#myChart").get(0).getContext("2d");
+var colors = [
+	"#468966",
+	"#FFF0A5",
+	"#8E2800",
+	"#FFB03B",
+	"#B64926",
+	"#26B693",
+	"#FF7A4F",
+	"#69220B",
+	"#2A764E",
+	"#835058",
+	"#2CA5A9",
+	"#F6D933"
+];
+var currentColorIndex = 0;
+var presetColors = new Object();
 
 function quicksort(arr) {
 	if (arr.length <= 1) {
@@ -33,9 +48,21 @@ function generateSegments(data, totalVisits) {
 		site = data[i];
 
 		if (site.visits > minVisits) {
+			var color = presetColors[site.site];
+			if (color == undefined) {
+				color = colors[currentColorIndex];
+
+				currentColorIndex += 1;
+				if (currentColorIndex == colors.length) {
+					currentColorIndex = 0;
+				}
+				presetColors[site.site] = color;
+			}
+
 			chartData.push({
 				y: site.visits,
-				indexLabel: site.site
+				indexLabel: site.site,
+				color: color
 			});
 			soFar += site.visits;
 			lastSegment = site.visits;
@@ -47,56 +74,124 @@ function generateSegments(data, totalVisits) {
 	if (soFar < totalVisits) {
 		chartData.push({
 			y: totalVisits - soFar,
-			indexLabel: "other"
+			indexLabel: "other",
+			color: "#eee"
 		});
 	}
 
 	return chartData;
 }
 
-$(function() {
+function fetchVisits(startTime, endTime, callback) {
 	chrome.history.search({
-		text: "",
+		text: '',
 		maxResults: 100000,
-		startTime: new Date().getTime() - (52 * 604800000), // one week ago
-		endTime: new Date().getTime()
-	}, function(data) {
+		startTime: startTime,
+		endTime: endTime
+	}, function(rawData) {
 		var collapsedVisits = new Object();
+		var uniqueUrls = 0;
+		var urlsSearched = 0;
 		var totalVisits = 0;
 
-		data.forEach(function(visit) {
-			domain = visit.url.match(domainExp)[2];
-			if (collapsedVisits[domain] != undefined) {
-				collapsedVisits[domain] = collapsedVisits[domain] + visit.visitCount;
-			} else {
-				collapsedVisits[domain] = visit.visitCount;
+		function done() {
+			urlsSearched ++;
+			if (urlsSearched == uniqueUrls) {
+				console.log(collapsedVisits);
+				callback(collapsedVisits, totalVisits);
 			}
+		}
 
-			totalVisits += visit.visitCount;
-		});
+		rawData.forEach(function(historyObj) {
+			var domain = historyObj.url.match(domainExp)[2];
+			var urlVisits = 0;
 
-		var visitArray = quicksort($.map(collapsedVisits, function(value, index) {
-			return {
-				site: index,
-				visits: value
-			};
-		}));
+			uniqueUrls ++;
+			console.log(historyObj.url);
 
-		var chart = new CanvasJS.Chart("myChart", {
-			// title: {
-			// 	text: "Testing"
-			// },
-			data: [
-				{
-					type: "pie",
-					showInLegend: false,
-					dataPoints: generateSegments(visitArray, totalVisits)
+			chrome.history.getVisits({ url: historyObj.url }, function(visitItems) {
+				visitItems.forEach(function(visitObj) {
+					if (visitObj.visitTime && visitObj.visitTime >= startTime && visitObj.visitTime <= endTime) {
+						urlVisits ++;
+					}
+				});
+
+				if (collapsedVisits[domain] != undefined) {
+					collapsedVisits[domain] = collapsedVisits[domain] + urlVisits;
+				} else {
+					collapsedVisits[domain] = urlVisits;
 				}
-			]
+
+				totalVisits += urlVisits;
+				done();
+			});
 		});
-
-		chart.render();
-
-		// var pieChart = new Chart(ctx).Pie(generateSegments(visitArray, totalVisits), { animateScale: false, showTooltips: true });
 	});
+}
+
+function drawChart(collapsedVisits, totalVisits, name, elementId) {
+	var visitArray = quicksort($.map(collapsedVisits, function(value, index) {
+		return {
+			site: index,
+			visits: value
+		};
+	}));
+
+	var chart = new CanvasJS.Chart(elementId, {
+		title: {
+			text: name
+		},
+		animationEnabled: false,
+		data: [
+			{
+				type: "pie",
+				indexLabelFontSize: 10,
+				indexLabelPlacement: "inside",
+				indexLabelBackgroundColor: "rgba(255,255,255,0)",
+				indexLabelFontColor: "rgba(0,0,0,0)",
+				startAngle: 270,
+				toolTipContent: "{indexLabel}: {y} visits",
+				showInLegend: false,
+				dataPoints: generateSegments(visitArray, totalVisits)
+			}
+		]
+	});
+
+	chart.render();
+}
+
+$(function() {
+	var d = new Date();
+
+	fetchVisits(
+		new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0).getTime(),
+		d.getTime(),
+		function(visits, total) {
+			drawChart(visits, total, "Today", "day");
+
+			fetchVisits(
+				d.getTime() - 604800000,
+				d.getTime(),
+				function(visits, total) {
+					drawChart(visits, total, "This week", "week");
+
+					fetchVisits(
+						d.getTime() - (4 * 604800000),
+						d.getTime(),
+						function(visits, total) {
+							drawChart(visits, total, "This month", "month");
+
+							fetchVisits(
+								d.getTime() - (52 * 604800000),
+								d.getTime(),
+								function(visits, total) {
+									drawChart(visits, total, "This year", "year");
+								}
+							);
+						}
+					);
+				}
+			);
+		}
+	);
 });
