@@ -69,6 +69,14 @@ function segmentClicked(event) {
 	}
 }
 
+function segmentMouseover(event) {
+
+}
+
+function segmentMouseout(event) {
+	
+}
+
 function generateSegments(data, totalVisits) {
 	var minVisits = totalVisits * 0.005;
 	var soFar = 0;

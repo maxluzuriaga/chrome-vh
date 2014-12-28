@@ -2,6 +2,10 @@
 	margin: 0;
 	padding: 0;
 }
+.clearfix {
+	overflow: auto;
+	zoom: 1;
+}
 
 body {
 	background: "#fff";
@@ -11,6 +15,7 @@ body {
 	width: 960px;
 	margin: 0 auto;
 	padding-top: 20px;
+	padding-bottom: 20px;
 }
 
 #charts {
@@ -67,4 +72,8 @@ div.chart.loading {
 	margin-top: 3px;
 	margin-right: 6px;
 	background: red;
+}
+
+p.credit {
+	clear: both;
 }
