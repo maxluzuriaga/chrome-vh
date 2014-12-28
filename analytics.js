@@ -15,6 +15,7 @@ var colors = [
 ];
 var currentColorIndex = 0;
 var presetColors = new Object();
+var charts = [];
 
 function quicksort(arr) {
 	if (arr.length <= 1) {
@@ -36,6 +37,35 @@ function quicksort(arr) {
 		more = quicksort(more);
 
 		return more.concat([pivot]).concat(less);
+	}
+}
+
+function addLegendPoint(domain, color) {
+
+}
+
+function explodeSegment(chart, label) {
+	var dataPoints = chart.options.data[0].dataPoints;
+	for (var i=0; i<dataPoints.length; i++) {
+		if (dataPoints[i].indexLabel == label) {
+			dataPoints[i].exploded = true;
+		} else {
+			dataPoints[i].exploded = false;
+		}
+	}
+
+	chart.render();
+}
+
+function segmentClicked(event) {
+	if (!event.dataPoint.exploded) { // inverted because at the time of this callback, explosion has already happened
+		charts.forEach(function(chart) {
+			explodeSegment(chart, "");
+		});
+	} else {
+		charts.forEach(function(chart) {
+			explodeSegment(chart, event.dataPoint.indexLabel);
+		});
 	}
 }
 
@@ -62,7 +92,8 @@ function generateSegments(data, totalVisits) {
 			chartData.push({
 				y: site.visits,
 				indexLabel: site.site,
-				color: color
+				color: color,
+				exploded: false
 			});
 			soFar += site.visits;
 			lastSegment = site.visits;
@@ -75,7 +106,8 @@ function generateSegments(data, totalVisits) {
 		chartData.push({
 			y: totalVisits - soFar,
 			indexLabel: "other",
-			color: "#eee"
+			color: "#eee",
+			exploded: false
 		});
 	}
 
@@ -97,7 +129,6 @@ function fetchVisits(startTime, endTime, callback) {
 		function done() {
 			urlsSearched ++;
 			if (urlsSearched == uniqueUrls) {
-				console.log(collapsedVisits);
 				callback(collapsedVisits, totalVisits);
 			}
 		}
@@ -107,7 +138,6 @@ function fetchVisits(startTime, endTime, callback) {
 			var urlVisits = 0;
 
 			uniqueUrls ++;
-			console.log(historyObj.url);
 
 			chrome.history.getVisits({ url: historyObj.url }, function(visitItems) {
 				visitItems.forEach(function(visitObj) {
@@ -154,6 +184,7 @@ function drawChart(collapsedVisits, totalVisits, name, elementId) {
 				indexLabelFontColor: "rgba(0,0,0,0)",
 				startAngle: 270,
 				toolTipContent: "{indexLabel}: {y} visits",
+				click: segmentClicked,
 				showInLegend: false,
 				dataPoints: generateSegments(visitArray, totalVisits)
 			}
@@ -161,10 +192,10 @@ function drawChart(collapsedVisits, totalVisits, name, elementId) {
 	});
 
 	chart.render();
+	charts.push(chart);
 }
 
 $(function() {
-// function doShit() {
 	var d = new Date();
 
 	fetchVisits(
@@ -220,4 +251,3 @@ $(function() {
 		}
 	);
 });
-// }

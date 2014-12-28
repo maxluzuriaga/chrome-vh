@@ -1,20 +1,39 @@
 <html>
  <head>
-  <title>History</title>
-  <link rel="stylesheet" type="text/css" href="styles.css">
+	<title>History</title>
+	<link rel="stylesheet" type="text/css" href="styles.css">
  </head>
  <body id="body">
-  <div id="container">
-    <div id="day" class="loading chart"></div>
-    <div id="week" class="loading chart"></div>
-    <div id="month" class="loading chart"></div>
-    <div id="all-time" class="loading chart"></div>
-  </div>
+	<div id="container">
+		<div id="charts">
+			<div class="chart-container">
+				<h2>Today</h2>
+				<div id="day" class="loading chart"></div>
+			</div>
+			<div class="chart-container">
+				<h2>This week</h2>
+				<div id="week" class="loading chart"></div>
+			</div>
+			<div class="chart-container">
+				<h2>This month</h2>
+				<div id="month" class="loading chart"></div>
+			</div>
+			<div class="chart-container">
+				<h2>All time</h2>
+				<div id="all-time" class="loading chart"></div>
+			</div>
+		</div>
+		<div id="legend">
+			<ul>
+				<li><span class="bullet" style="background-color: red;"></span> facebook.com</li>
+				<li><span class="bullet" style="background-color: blue;"></span> google.com</li>
+			</ul>
+		</div>
+	</div>
 
-  <script src="jquery-2.1.3.min.js"></script>
-  <script src="chart.min.js"></script>
-  <script src="jquery.canvasjs.min.js"></script>
-  <script src="analytics.js"></script>
+	<script src="jquery-2.1.3.min.js"></script>
+	<script src="chart.min.js"></script>
+	<script src="jquery.canvasjs.min.js"></script>
+	<script src="analytics.js"></script>
  </body>
 </html>
-

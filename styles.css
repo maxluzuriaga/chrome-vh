@@ -8,21 +8,63 @@ body {
 }
 
 #container {
-	/*background: red;*/
 	width: 960px;
 	margin: 0 auto;
+	padding-top: 20px;
+}
+
+#charts {
+	float: left;
+	width: 700px;
+}
+
+#legend {
+	float: right;
+	width: 220px;
 }
 
 a.canvasjs-chart-credit {
 	color: white;
 }
 
-div.chart {
+div.chart-container {
+	width: 350px;
+	height: auto;
 	float: left;
-	width: 480px;
-	height: 480px;
-	/*background: red;*/
-	/*border: 1px solid white;*/
+	margin-bottom: 15px;
+}
+div.chart-container h2 {
+	text-align: center;
+	font-weight: bold;
+	font-family: Helvetica, Arial, sans-serif;
+	color: #000;
+	font-size: 24px;
+	margin-bottom: 10px;
 }
 
-/*http://rpg.drivethrustuff.com/shared_images/ajax-loader.gif" style="float:right"*/
+div.chart {
+	float: left;
+	width: 345px;
+	height: 345px;
+}
+div.chart.loading {
+	background: url("ajax-loader.gif") no-repeat center center;
+}
+
+#legend ul {
+	list-style-type: none;\
+}
+#legend li {
+	font-size: 14px;
+	margin-bottom: 7px;
+}
+#legend ul span.bullet {
+	width: 12px;
+	height: 12px;
+	display: block;
+	float: left;
+	border-radius: 50%;
+	margin-top: 3px;
+	margin-right: 6px;
+	background: red;
+}
