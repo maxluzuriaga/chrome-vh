@@ -139,7 +139,10 @@ function drawChart(collapsedVisits, totalVisits, name, elementId) {
 
 	var chart = new CanvasJS.Chart(elementId, {
 		title: {
-			text: name
+			text: name,
+			margin: 0,
+			padding: 0,
+			fontSize: 0
 		},
 		animationEnabled: false,
 		data: [
@@ -161,6 +164,7 @@ function drawChart(collapsedVisits, totalVisits, name, elementId) {
 }
 
 $(function() {
+// function doShit() {
 	var d = new Date();
 
 	fetchVisits(
@@ -168,26 +172,47 @@ $(function() {
 		d.getTime(),
 		function(visits, total) {
 			drawChart(visits, total, "Today", "day");
+			$("a.canvasjs-chart-credit").css("color", "white");
 
 			fetchVisits(
 				d.getTime() - 604800000,
 				d.getTime(),
 				function(visits, total) {
 					drawChart(visits, total, "This week", "week");
+					$("a.canvasjs-chart-credit").css("color", "white");
 
 					fetchVisits(
 						d.getTime() - (4 * 604800000),
 						d.getTime(),
 						function(visits, total) {
 							drawChart(visits, total, "This month", "month");
+							$("a.canvasjs-chart-credit").css("color", "white");
 
-							fetchVisits(
-								d.getTime() - (52 * 604800000),
-								d.getTime(),
-								function(visits, total) {
-									drawChart(visits, total, "This year", "year");
-								}
-							);
+							chrome.history.search({
+								text: '',
+								maxResults: 100000,
+								startTime: 0,
+								endTime: d.getTime()
+							}, function(rawData) {
+								var collapsedVisits = new Object();
+								var totalVisits = 0;
+
+								rawData.forEach(function(historyObj) {
+									var domain = historyObj.url.match(domainExp)[2];
+
+									if (collapsedVisits[domain] != undefined) {
+										collapsedVisits[domain] = collapsedVisits[domain] + historyObj.visitCount;
+									} else {
+										collapsedVisits[domain] = historyObj.visitCount;
+									}
+
+									totalVisits += historyObj.visitCount;
+								});
+
+								drawChart(collapsedVisits, totalVisits, "All time", "all-time");
+
+								$("a.canvasjs-chart-credit").css("color", "white");
+							});
 						}
 					);
 				}
@@ -195,3 +220,4 @@ $(function() {
 		}
 	);
 });
+// }

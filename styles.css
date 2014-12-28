@@ -1,0 +1,28 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: "#fff";
+}
+
+#container {
+	/*background: red;*/
+	width: 960px;
+	margin: 0 auto;
+}
+
+a.canvasjs-chart-credit {
+	color: white;
+}
+
+div.chart {
+	float: left;
+	width: 480px;
+	height: 480px;
+	/*background: red;*/
+	/*border: 1px solid white;*/
+}
+
+/*http://rpg.drivethrustuff.com/shared_images/ajax-loader.gif" style="float:right"*/
