@@ -33,7 +33,6 @@ div.chart-container {
 	width: 350px;
 	height: auto;
 	float: left;
-	margin-bottom: 15px;
 }
 div.chart-container h2 {
 	text-align: center;
@@ -55,12 +54,12 @@ div.chart.loading {
 
 #legend ul {
 	list-style-type: none;
-	height: 715px;
+	height: 702px;
 	overflow-y: scroll;
 	overflow-x: hidden;
-	margin-top: 27px;
+	margin-top: 35px;
 	background: rgba(0,0,0,0.1);
-	padding: 20px 0;
+	padding: 10px 0;
 }
 #legend .domain {
 	float: right;
@@ -74,11 +73,11 @@ div.chart.loading {
 	color: #000;
 	display: block;
 	width: 210px;
-	padding: 6px 20px;
+	padding: 7px 20px;
 }
 #legend ul span.bullet {
-	width: 11px;
-	height: 11px;
+	width: 10px;
+	height: 10px;
 	display: block;
 	float: left;
 	border-radius: 50%;
@@ -87,8 +86,6 @@ div.chart.loading {
 }
 
 #legend li.selected a {
-	/*margin-left: -15px;*/
-	/*background: rgba(255,255,0,1);*/
 	background: #000;
 	color: #fff;
 	font-weight: bold;
@@ -99,5 +96,5 @@ p.credit {
 	text-align: center;
 }
 p.credit a, p.credit a:visited {
-	color: #777;
+	color: #555;
 }
