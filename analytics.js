@@ -1,19 +1,4 @@
 var domainExp = /(\/\/www\.|\/\/)(((?!\/).)*)\//
-var colors = [
-	"#468966",
-	"#FFF0A5",
-	"#8E2800",
-	"#FFB03B",
-	"#B64926",
-	"#26B693",
-	"#FF7A4F",
-	"#69220B",
-	"#2A764E",
-	"#835058",
-	"#2CA5A9",
-	"#F6D933"
-];
-var currentColorIndex = 0;
 var presetColors = new Object();
 var charts = [];
 
@@ -41,7 +26,9 @@ function quicksort(arr) {
 }
 
 function addLegendPoint(domain, color) {
-
+	var domainId = domain.replace('.', '').replace(':', '');
+	$("#legend-dynamic").append('<li id="' + domainId + '"><a class="legend-point" href="#"><span class="bullet"></span><span class="domain">' + domain + '</span></a></li>');
+	$("#" + domainId + " span.bullet").css('background-color', color);
 }
 
 function explodeSegment(chart, label) {
@@ -80,13 +67,10 @@ function generateSegments(data, totalVisits) {
 		if (site.visits > minVisits) {
 			var color = presetColors[site.site];
 			if (color == undefined) {
-				color = colors[currentColorIndex];
-
-				currentColorIndex += 1;
-				if (currentColorIndex == colors.length) {
-					currentColorIndex = 0;
-				}
+				color = randomColor({lumosity: 'light'})
 				presetColors[site.site] = color;
+
+				addLegendPoint(site.site, color);
 			}
 
 			chartData.push({

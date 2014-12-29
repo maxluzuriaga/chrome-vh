@@ -53,15 +53,28 @@ div.chart.loading {
 }
 
 #legend ul {
-	list-style-type: none;\
+	list-style-type: none;
 }
 #legend li {
-	font-size: 14px;
+	width: 220px;
+	height: 17px;
+	font-size: 12px;
 	margin-bottom: 7px;
 }
+#legend .domain {
+	float: right;
+	display: block;
+	overflow: scroll;
+	width: 201px;
+}
+#legend li a {
+	text-decoration: none;
+	color: #000;
+	display: block;
+}
 #legend ul span.bullet {
-	width: 12px;
-	height: 12px;
+	width: 11px;
+	height: 11px;
 	display: block;
 	float: left;
 	border-radius: 50%;
