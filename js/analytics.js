@@ -104,7 +104,7 @@ function generateSegments(data, totalVisits) {
 		if (site.visits > minVisits) {
 			var color = presetColors[site.site];
 			if (color == undefined) {
-				color = randomColor({lumosity: 'light'})
+				color = randomColor({lumosity: 'light'});
 				presetColors[site.site] = color;
 
 				addLegendPoint(site.site, color);
