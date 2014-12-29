@@ -1,10 +1,11 @@
 {
 	"manifest_version": 2,
 
-	"name": "Visual History",
+	"name": "History Chart",
+	"short_name": "HistoryChart",
 	"description": "Visualize and break down your Chrome browsing history by site.",
 
-	"version": "0.0.1",
+	"version": "0.0.2",
 
 	"permissions": [
 		"history",
