@@ -25,34 +25,60 @@ function quicksort(arr) {
 	}
 }
 
+function cleanseDomain(domain) {
+	return domain.split(".").join("").split(":").join("");
+}
+
 function addLegendPoint(domain, color) {
-	var domainId = domain.replace('.', '').replace(':', '');
-	$("#legend-dynamic").append('<li id="' + domainId + '"><a class="legend-point" href="#"><span class="bullet"></span><span class="domain">' + domain + '</span></a></li>');
+	var domainId = cleanseDomain(domain);
+	$("#legend-dynamic").append('<li id="' + domainId + '"><a class="legend-point clearfix" href="#"><span class="bullet"></span><span class="domain">' + domain + '</span></a></li>');
 	$("#" + domainId + " span.bullet").css('background-color', color);
 }
 
-function explodeSegment(chart, label) {
-	var dataPoints = chart.options.data[0].dataPoints;
-	for (var i=0; i<dataPoints.length; i++) {
-		if (dataPoints[i].indexLabel == label) {
-			dataPoints[i].exploded = true;
-		} else {
-			dataPoints[i].exploded = false;
-		}
+function selectLegendPoint(domain) {
+	$("#legend li.selected").removeClass("selected");
+	$("#" + cleanseDomain(domain)).addClass("selected");
+}
+
+function legendPointClicked(e) {
+	var domain = $($(this).children("span.domain")[0]).html();
+	
+	var currentSelected = $($("#legend li.selected")[0]);
+	var domainId = cleanseDomain(domain);
+	if (currentSelected.attr('id') == domainId) {
+		explodeSegment("");
+		selectLegendPoint("");
+	} else {
+		selectLegendPoint(domain);
+		explodeSegment(domain);
 	}
 
-	chart.render();
+	e.preventDefault();
+	return false;
+}
+
+function explodeSegment(label) {
+	charts.forEach(function(chart) {
+		var dataPoints = chart.options.data[0].dataPoints;
+		for (var i=0; i<dataPoints.length; i++) {
+			if (dataPoints[i].indexLabel == label) {
+				dataPoints[i].exploded = true;
+			} else {
+				dataPoints[i].exploded = false;
+			}
+		}
+
+		chart.render();
+	});
 }
 
 function segmentClicked(event) {
 	if (!event.dataPoint.exploded) { // inverted because at the time of this callback, explosion has already happened
-		charts.forEach(function(chart) {
-			explodeSegment(chart, "");
-		});
+		explodeSegment("");
+		selectLegendPoint("");
 	} else {
-		charts.forEach(function(chart) {
-			explodeSegment(chart, event.dataPoint.indexLabel);
-		});
+		explodeSegment(event.dataPoint.indexLabel);
+		selectLegendPoint(event.dataPoint.indexLabel);
 	}
 }
 
@@ -227,6 +253,7 @@ $(function() {
 								drawChart(collapsedVisits, totalVisits, "All time", "all-time");
 
 								$("a.canvasjs-chart-credit").css("color", "white");
+								$("a.legend-point").click(legendPointClicked);
 							});
 						}
 					);
