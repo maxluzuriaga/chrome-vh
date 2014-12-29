@@ -47,8 +47,6 @@ div.chart {
 	float: left;
 	width: 345px;
 	height: 345px;
-}
-div.chart.loading {
 	background: url("../img/ajax-loader.gif") no-repeat center center;
 }
 

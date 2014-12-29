@@ -57,6 +57,15 @@ function legendPointClicked(e) {
 	return false;
 }
 
+function scrollToLegendPoint(domain, callback) {
+	$parent = $("#legend ul");
+	$innerItem = $("#" + cleanseDomain(domain));
+
+	$parent.animate({
+		scrollTop: $parent.scrollTop() + $innerItem.position().top - $parent.height()/2 + $innerItem.height()/2
+	}, 300, "swing", callback);
+}
+
 function explodeSegment(label) {
 	charts.forEach(function(chart) {
 		var dataPoints = chart.options.data[0].dataPoints;
@@ -78,7 +87,9 @@ function segmentClicked(event) {
 		selectLegendPoint("");
 	} else {
 		explodeSegment(event.dataPoint.indexLabel);
-		selectLegendPoint(event.dataPoint.indexLabel);
+		scrollToLegendPoint(event.dataPoint.indexLabel, function() {
+			selectLegendPoint(event.dataPoint.indexLabel);
+		});
 	}
 }
 
