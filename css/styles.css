@@ -49,7 +49,7 @@ div.chart {
 	height: 345px;
 }
 div.chart.loading {
-	background: url("ajax-loader.gif") no-repeat center center;
+	background: url("../img/ajax-loader.gif") no-repeat center center;
 }
 
 #legend ul {
