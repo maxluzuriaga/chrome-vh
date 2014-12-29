@@ -7,10 +7,18 @@
 	"version": "0.1",
 
 	"permissions": [
-		"history"
+		"history",
+		"tabs"
 	],
 
-	"chrome_url_overrides": {
-		"history": "index.html"
+	"page_action": {
+		"default_icon": {
+			"19": "img/icon19.png"
+		},
+		"default_title": "History Analysis"
+	},
+
+	"background": {
+		"scripts": ["js/background.js"]
 	}
 }
