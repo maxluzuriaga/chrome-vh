@@ -5,7 +5,7 @@
 	"short_name": "HistoryChart",
 	"description": "Visualize and break down your Chrome browsing history by site.",
 
-	"version": "0.0.4",
+	"version": "0.0.5",
 
 	"permissions": [
 		"history",
